@@ -12,19 +12,19 @@ jobs:
     runs-on: ubuntu-18.04
     steps:
       - uses: actions/checkout@v2
-      - name: show
-        run: 'echo "payload: ${{ toJson(github.event.client_payload) }}"'
-      # - name: Execute SSH commmands on remote server
-      #   uses: tarunjangra/ssh-remote-cmd@v1
-      #   env:
-      #     SERVER: 218.78.25.41
-      #     PORT: 8022
-      #     NAMESPACE: "${{ github.event.client_payload.owner }}-${{ github.event.client_payload.repo }}-${{ github.event.client_payload.tag }}"
-      #   with:
-      #     command: |
-      #       cd z-ctyun-devops
-      #       yarn site:${{ github.event.client_payload.owner }} -e namespace=${{ env.NAMESPACE }} -e ${{ github.event.client_payload.repo }}=${{ github.event.client_payload.tag }}
-      #     host: ${{ env.SERVER }}
-      #     port: ${{ env.PORT }}
-      #     user: root
-      #     key: ${{ secrets.CTYUN_PRIVATE_KEY}}
+      # - name: show
+      #   run: 'echo "payload: ${{ toJson(github.event.client_payload) }}"'
+      - name: Execute SSH commmands on remote server
+        uses: tarunjangra/ssh-remote-cmd@v1
+        env:
+          SERVER: 218.78.25.41
+          PORT: 8022
+          NAMESPACE: "${{ github.event.client_payload.owner }}-${{ github.event.client_payload.repo }}-${{ github.event.client_payload.tag }}"
+        with:
+          command: |
+            cd z-ctyun-devops
+            yarn site:${{ github.event.client_payload.owner }} -e namespace=${{ env.NAMESPACE }} -e ${{ github.event.client_payload.repo }}=${{ github.event.client_payload.tag }}
+          host: ${{ env.SERVER }}
+          port: ${{ env.PORT }}
+          user: root
+          key: ${{ secrets.CTYUN_PRIVATE_KEY}}
