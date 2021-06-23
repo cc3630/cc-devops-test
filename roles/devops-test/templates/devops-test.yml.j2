@@ -41,7 +41,7 @@ spec:
             - name: PORT
               value: "80"
             - name: BASE
-              value: /v0
+              value: "{{ base_path }}"
             - name: MONGODB_CONNECTION
               value: "{{ mongodb_connection }}"
           ports:

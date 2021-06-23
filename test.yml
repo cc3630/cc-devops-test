@@ -6,10 +6,12 @@
     namespace: devops-test
     state: present
     domain: "{{ namespace }}.36node.com"
-    cert_issuer: letsencrypt-staging-alidns
-    # cert_issuer: letsencrypt-alidns
+    # cert_issuer: letsencrypt-staging-alidns
+    cert_issuer: letsencrypt-alidns
     mongodb_connection: "mongodb://root:{{ lookup('env','MONGODB_ROOT_PASSWORD') }}@mongodb"
     image_version: latest
+    url_path: /v0
+    base_path: /v0
 
   roles:
     - role: 36node.alidns
