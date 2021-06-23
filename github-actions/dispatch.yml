@@ -19,10 +19,11 @@ jobs:
         env:
           SERVER: 218.78.25.41
           PORT: 8022
+          DEVOPS_PATH: z-ctyun-devops
           NAMESPACE: "${{ github.event.client_payload.owner }}-${{ github.event.client_payload.repo }}-${{ github.event.client_payload.tag }}"
         with:
           command: |
-            cd z-ctyun-devops
+            cd ${{ env.DEVOPS_PATH }}
             yarn site:${{ github.event.client_payload.owner }} -e namespace=${{ env.NAMESPACE }} -e ${{ github.event.client_payload.repo }}=${{ github.event.client_payload.tag }}
           host: ${{ env.SERVER }}
           port: ${{ env.PORT }}
