@@ -8,13 +8,13 @@ on:
     types: [opened, synchronize, reopened]
 
 jobs:
-  build-test:
+  pr-build-push-trigger:
     runs-on: ubuntu-18.04
+    env:
+      ORG_NAME: 36node
+      REPO_NAME: devops-backend-test
     steps:
       - uses: actions/checkout@v2
-      # - name: show
-      #   run: |
-      #     echo "$PATH"
       - name: Login aliyun
         uses: aliyun/acr-login@v1
         with:
@@ -23,10 +23,17 @@ jobs:
           password: "${{ secrets.ALI_PASSWORD }}"
       - name: Build and push image
         env:
-          ORG_NAME: 36node
-          REPO_NAME: backend-test
           SERVER: ${{ secrets.ALI_REGISTRY }}
           VERSION: ${{ github.event.pull_request.number }}
         run: |
           docker build -t $SERVER/$ORG_NAME/$REPO_NAME:pr-$VERSION .
           docker push $SERVER/$ORG_NAME/$REPO_NAME:pr-$VERSION
+      - name: Create repository dispatch event
+        env:
+          URL: https://api.github.com/repos/cc3630/cc-devops-test/dispatches
+        uses: fjogeleit/http-request-action@master
+        with:
+          url: ${{ env.URL }}
+          method: "POST"
+          customHeaders: '{"Accept":"application/vnd.github.v3+json","Authorization":"token ${{ secrets.PR_TOKEN }}"}'
+          data: '{"event_type":"custom_event_type","client_payload":{"owner":"${{ env.ORG_NAME }}","repo":"${{ env.REPO_NAME }}","tag":"pr-${{ github.event.pull_request.number}}"}}'
