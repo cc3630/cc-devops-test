@@ -18,4 +18,4 @@ devops 测试工程，用于快速部署 k8s 的测试环境
 
 - pr 工程引用 ci-backend.yml、ci-frontend.yml 和 pr-build.yml 的 github action 文件
 - 以阿里云镜像仓库为例，pr 工程需要 ALI_REGISTRY、ALI_USERNAME、ALI_PASSWORD，此外 pr-build.yml 中的 org_name 和 repo_name 需要和阿里云镜像地址一致
-- pr 工程还需要提供 personal access token，用于执行 github 的 repository_dispatch 事件，目前采用 cc 的`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`，仅拥有 repo 相关权限
+- pr 工程还需要提供 GITHUB_TOKEN(personal access token)，用于执行 github 的 repository_dispatch 事件，目前采用 cc 的`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`，仅拥有 repo 相关权限
