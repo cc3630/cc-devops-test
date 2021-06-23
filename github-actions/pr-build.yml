@@ -1,0 +1,32 @@
+# This workflow will run tests using node and then publish a package to NPM Packages when a release is created
+# For more information see: https://help.github.com/actions/language-and-framework-guides/publishing-nodejs-packages
+
+name: pr build image
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+jobs:
+  build-test:
+    runs-on: ubuntu-18.04
+    steps:
+      - uses: actions/checkout@v2
+      # - name: show
+      #   run: |
+      #     echo "$PATH"
+      - name: Login aliyun
+        uses: aliyun/acr-login@v1
+        with:
+          login-server: "${{ secrets.ALI_REGISTRY }}"
+          username: "${{ secrets.ALI_USERNAME }}"
+          password: "${{ secrets.ALI_PASSWORD }}"
+      - name: Build and push image
+        env:
+          ORG_NAME: 36node
+          REPO_NAME: backend-test
+          SERVER: ${{ secrets.ALI_REGISTRY }}
+          VERSION: ${{ github.event.pull_request.number }}
+        run: |
+          docker build -t $SERVER/$ORG_NAME/$REPO_NAME:pr-$VERSION .
+          docker push $SERVER/$ORG_NAME/$REPO_NAME:pr-$VERSION

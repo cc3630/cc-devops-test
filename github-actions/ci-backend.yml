@@ -1,0 +1,51 @@
+# This workflow will run tests using node and then publish a package to NPM Packages when a release is created
+# For more information see: https://help.github.com/actions/language-and-framework-guides/publishing-nodejs-packages
+
+name: Continue Integration
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build-test:
+    runs-on: ubuntu-18.04
+    services:
+      mongodb:
+        image: mongo:4
+        ports:
+          - 27017:27017
+    steps:
+      - name: Setup timezone
+        uses: zcong1993/setup-timezone@master
+        with:
+          timezone: Asia/Shanghai
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v1
+        with:
+          node-version: 14
+          registry-url: https://registry.npmjs.org/
+      - name: Cache Dependencies
+        id: cache-node-modules
+        uses: actions/cache@v2
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-node-14-nodemodules-${{ hashFiles('yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-node-14-nodemodules-
+      - name: Install Dependencies
+        run: yarn
+      - name: Eslint
+        run: yarn lint
+        env:
+          CI: true
+      - name: Unit Test
+        run: NODE_ENV=test yarn test --coverage
+      - name: Upload Unit Test Coverage
+        run: bash <(curl -s https://codecov.io/bash)
+      - name: Integration Test
+        run: NODE_ENV=test yarn test:int

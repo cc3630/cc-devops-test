@@ -1,0 +1,25 @@
+[all:vars]
+ansible_user=root
+
+## ansible 默认的 key file
+ansible_ssh_private_key_file="{{ lookup('env','ANSIBLE_SSH_PRIVATE_KEY_FILE') }}"
+
+## 全局的域名，供外部访问时使用
+domain=z-ctyun.36node.com
+
+## k8s 块存储类别
+storage_class=rook-ceph-block
+fs_storage_class=rook-cephfs
+
+## cert-manager 的方式
+cert_issuer=letsencrypt-alidns
+
+## python 版本
+ansible_python_interpreter=/usr/bin/python3
+
+## 需要 sudo 时候的密码
+ansible_become_pass="{{ lookup('env','ANSIBLE_BECOME_PASS') }}"
+
+## aliyun cli && sdk
+ali_key="{{ lookup('env','ALI_KEY') }}"
+ali_secret="{{ lookup('env','ALI_SECRET') }}"

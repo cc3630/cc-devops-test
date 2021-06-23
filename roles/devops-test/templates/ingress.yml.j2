@@ -1,0 +1,23 @@
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: "{{ ingress_name }}"
+  annotations:
+    kubernetes.io/ingress.class: traefik
+    cert-manager.io/cluster-issuer: "{{ cert_issuer }}"
+    # traefik.ingress.kubernetes.io/redirect-entry-point: https
+spec:
+  rules:
+    - host: api.{{ domain }}
+      http:
+        paths:
+          - path: "{{ url_path }}"
+            backend:
+              serviceName: devops-test
+              servicePort: 80
+  tls:
+    - hosts:
+        - "{{ domain }}"
+        - "*.{{ domain }}"
+      secretName: "{{ domain }}"

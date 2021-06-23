@@ -1,0 +1,15 @@
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: uat
+  namespace: youyuan
+spec:
+  rules:
+    - host: api.youyuan.36node.com
+      http:
+        paths:
+          - backend:
+              serviceName: backend-test-uat
+              servicePort: 80
+            path: /backend/uat

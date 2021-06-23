@@ -1,0 +1,9 @@
+---
+namespace: webhook
+webhook_state: present
+
+mongodb_replicaset: rs0
+mongodb_connection: mongodb://root:it_is_a_secret@mongodb-0.mongodb-headless.data,mongodb-1.mongodb-headless.data,mongodb-2.mongodb-headless.data
+
+webhook_core_mongodb: "{{ mongodb_connection }}/{{ namespace }}-core?authSource=admin&replicaSet={{ mongodb_replicaset }}"
+webhook_core_version: pr-4

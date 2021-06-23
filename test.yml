@@ -1,0 +1,37 @@
+- name: Setup cluster infra structure
+  hosts: localhost
+  gather_facts: false
+
+  vars:
+    namespace: devops-test
+    state: present
+    domain: "{{ namespace }}.36node.com"
+    cert_issuer: letsencrypt-staging-alidns
+    # cert_issuer: letsencrypt-alidns
+    mongodb_connection: "mongodb://root:{{ lookup('env','MONGODB_ROOT_PASSWORD') }}@mongodb"
+    image_version: latest
+
+  roles:
+    - role: 36node.alidns
+      tags:
+        - dns
+      vars:
+        alidns_records:
+          - "36node.com {{ namespace }} 218.78.25.41 A"
+          - "36node.com *.{{ namespace }} 218.78.25.41 A"
+
+    - role: 36node.mongodb
+      tags:
+        - mongodb
+      vars:
+        mongodb_state: "{{ state }}"
+        mongodb_storage_size: 1Gi
+        mongodb_chart_values:
+          architecture: standalone
+          auth:
+            enabled: true
+            rootPassword: "{{ lookup('env','MONGODB_ROOT_PASSWORD') }}"
+
+    - role: devops-test
+      tags:
+        - devops-test

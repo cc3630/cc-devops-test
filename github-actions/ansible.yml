@@ -1,0 +1,51 @@
+# This workflow will run tests using node and then publish a package to NPM Packages when a release is created
+# For more information see: https://help.github.com/actions/language-and-framework-guides/publishing-nodejs-packages
+
+name: Ansible test
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-test:
+    runs-on: ubuntu-18.04
+    steps:
+      - uses: actions/checkout@v2
+      - name: Setup python
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.7
+          architecture: x64
+      - name: Set env
+        run: echo "PYTHON_PATH=$(echo `which python`)" >> $GITHUB_ENV
+      - name: show env
+        run: |
+          echo "${{ env.PYTHON_PATH}}"
+      - name: Install Python dependencies
+        uses: py-actions/py-dependency-install@v2
+        with:
+          path: ansible/python/requirements.txt
+      # - name: Install Ansible dependencies
+      #   run: ansible-galaxy install -r ansible/requirements.yml
+      - name: Install kubectl
+        uses: ThomasKliszowski/setup-kubectl@v1
+        with:
+          kube-config: ${{ secrets.CTYUN_K8S_CONFIG }}
+          kube-version: 1.19.0
+      - name: Play Ansible Playbook
+        uses: arillso/action.playbook@master
+        env:
+          NAMESPACE: webhook-pr-8
+          VERSION: pr-8
+          pythonLocation: ${{ env.PYTHON_PATH }}
+        with:
+          playbook: ansible/test.yml
+          inventory: ansible/hosts
+          galaxy_file: ansible/requirements.yml
+      # - name: Play Ansible Playbook
+      #   env:
+      #     NAMESPACE: webhook-pr-8
+      #     VERSION: pr-8
+      #   run: ansible-playbook -i ansible/hosts ansible/test.yml

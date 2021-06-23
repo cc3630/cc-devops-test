@@ -1,0 +1,43 @@
+{
+  "name": "ctyun-zhuang-devops",
+  "version": "0.0.0+HEAD",
+  "description": "ctyun for zhuang",
+  "repository": {
+    "url": "36node/ctyun-zhuang-devops",
+    "type": "git"
+  },
+  "scripts": {
+    "postinstall": "ansible-galaxy install -r requirements.yml",
+    "format": "prettier --write 'src/**'",
+    "release": "standard-version",
+    "test": "dotenv ansible-playbook test.yml"
+  },
+  "commitlint": {
+    "extends": [
+      "@commitlint/config-conventional"
+    ]
+  },
+  "husky": {
+    "hooks": {
+      "commit-msg": "commitlint -e $GIT_PARAMS",
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "*.md": [
+      "npm run format",
+      "git add"
+    ]
+  },
+  "devDependencies": {
+    "@commitlint/cli": "^8.3.5",
+    "@commitlint/config-conventional": "^8.3.4",
+    "dotenv": "^8.2.0",
+    "esm": "^3.2.25",
+    "husky": "^6.0.0",
+    "lint-staged": "^10.0.8",
+    "prettier": "^2.0.5",
+    "standard-version": "^8.0.0"
+  },
+  "dependencies": {}
+}

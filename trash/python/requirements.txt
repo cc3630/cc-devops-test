@@ -1,0 +1,2 @@
+ansible-base==2.10.8
+openshift==0.12.0
