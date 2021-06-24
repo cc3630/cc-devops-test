@@ -22,7 +22,7 @@ jobs:
         id: sub
         with:
           _input-text: "${{ github.event.client_payload.repo }}"
-          "-": "_"
+          "-": _
       - name: Execute SSH commmands on remote server
         uses: tarunjangra/ssh-remote-cmd@v1
         env:
@@ -33,7 +33,7 @@ jobs:
         with:
           command: |
             cd ${{ env.DEVOPS_PATH }}
-            yarn site:${{ github.event.client_payload.owner }} -e namespace=${{ github.event.client_payload.namespace }} -e ${{ github.event.client_payload.repo }}=${{ github.event.client_payload.tag }} -e ${{ github.event.client_payload.repo }}_time=${{ steps.time.outputs.time }}
+            yarn site:${{ github.event.client_payload.owner }} -e namespace=${{ github.event.client_payload.namespace }} -e ${{ steps.sub.outputs.result }}_version=${{ github.event.client_payload.tag }} -e ${{ steps.sub.outputs.result }}_time=${{ steps.time.outputs.time }}
           host: ${{ env.SERVER }}
           port: ${{ env.PORT }}
           user: root
