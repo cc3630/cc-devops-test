@@ -1,0 +1,43 @@
+# This workflow will run tests using node and then publish a package to NPM Packages when a release is created
+# For more information see: https://help.github.com/actions/language-and-framework-guides/publishing-nodejs-packages
+
+name: main build image
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  pr-build-push-trigger:
+    runs-on: ubuntu-18.04
+    env:
+      ORG_NAME: 36node
+      REPO_NAME: devops-backend-test
+    steps:
+      - uses: actions/checkout@v2
+      - name: Login aliyun
+        uses: aliyun/acr-login@v1
+        with:
+          login-server: "${{ secrets.ALI_REGISTRY }}"
+          username: "${{ secrets.ALI_USERNAME }}"
+          password: "${{ secrets.ALI_PASSWORD }}"
+      - name: Build and push image
+        env:
+          SERVER: ${{ secrets.ALI_REGISTRY }}
+          VERSION: latest
+        run: |
+          docker build -t $SERVER/$ORG_NAME/$REPO_NAME:pr-$VERSION .
+          docker push $SERVER/$ORG_NAME/$REPO_NAME:pr-$VERSION
+      - name: Create repository dispatch event
+        env:
+          DISPATCH_URL: https://api.github.com/repos/cc3630/cc-devops-test/dispatches
+        uses: fjogeleit/http-request-action@master
+        with:
+          url: ${{ env.DISPATCH_URL }}
+          method: "POST"
+          customHeaders: '{"Accept":"application/vnd.github.v3+json","Authorization":"token ${{ secrets.PR_TOKEN }}"}'
+          data: '{"event_type":"custom_event_type","client_payload":{"owner":"${{ env.ORG_NAME }}","repo":"${{ env.REPO_NAME }}","tag":"${{ env.VERSION }}"}}'
