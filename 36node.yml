@@ -9,7 +9,7 @@
     # cert_issuer: letsencrypt-staging-alidns
     cert_issuer: letsencrypt-alidns
     mongodb_connection: "mongodb://root:{{ lookup('env','MONGODB_ROOT_PASSWORD') }}@mongodb"
-    image_version: latest
+    devops_backend_test_version: latest
     url_path: /v0
     base_path: /v0
 

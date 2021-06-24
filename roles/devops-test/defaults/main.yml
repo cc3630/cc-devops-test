@@ -3,6 +3,7 @@ namespace: devops-test
 state: present
 
 devops_backend_test_time: 20210624103635
+devops_backend_test_version: latest
 
 ingress_name: "{{ namespace }}"
 url_path: /v0

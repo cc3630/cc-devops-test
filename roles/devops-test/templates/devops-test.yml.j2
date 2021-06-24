@@ -36,7 +36,7 @@ spec:
     spec:
       containers:
         - name: devops-test
-          image: "registry.cn-beijing.aliyuncs.com/36node/devops-backend-test:{{ image_version }}"
+          image: "registry.cn-beijing.aliyuncs.com/36node/devops-backend-test:{{ devops_backend_test_version }}"
           env:
             - name: DEPLOY_TIME
               value: "{{ devops_backend_test_time }}"
