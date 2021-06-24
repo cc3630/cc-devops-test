@@ -2,6 +2,8 @@
 namespace: devops-test
 state: present
 
+devops_backend_test_time: 20210624103635
+
 ingress_name: "{{ namespace }}"
 url_path: /v0
 

@@ -1,0 +1,40 @@
+# This workflow will run tests using node and then publish a package to NPM Packages when a release is created
+# For more information see: https://help.github.com/actions/language-and-framework-guides/publishing-nodejs-packages
+
+name: MAIN Dispatch
+
+on:
+  repository_dispatch:
+    types: [main-deploy]
+
+jobs:
+  build-test:
+    runs-on: ubuntu-18.04
+    steps:
+      - uses: actions/checkout@v2
+      - name: Get Time
+        id: time
+        uses: nanzm/get-time-action@v1.1
+        with:
+          timeZone: 8
+          format: "YYYYMMDDHHmmss"
+      - uses: bluwy/substitute-string-action@v1
+        id: sub
+        with:
+          _input-text: "${{ github.event.client_payload.repo }}"
+          "-": "_"
+      - name: Execute SSH commmands on remote server
+        uses: tarunjangra/ssh-remote-cmd@v1
+        env:
+          SERVER: 218.78.25.41
+          PORT: 8022
+          DEVOPS_PATH: cc-devops-test
+          NAMESPACE: "${{ github.event.client_payload.owner }}-${{ github.event.client_payload.repo }}-${{ github.event.client_payload.tag }}"
+        with:
+          command: |
+            cd ${{ env.DEVOPS_PATH }}
+            yarn site:${{ github.event.client_payload.owner }} -e namespace=${{ github.event.client_payload.namespace }} -e ${{ github.event.client_payload.repo }}=${{ github.event.client_payload.tag }} -e ${{ github.event.client_payload.repo }}_time=${{ steps.time.outputs.time }}
+          host: ${{ env.SERVER }}
+          port: ${{ env.PORT }}
+          user: root
+          key: ${{ secrets.CTYUN_PRIVATE_KEY}}

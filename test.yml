@@ -36,16 +36,14 @@ spec:
     spec:
       containers:
         - name: devops-test
-          image: "registry.cn-beijing.aliyuncs.com/36node/devops-backend-test:{{ image_version }}"
+          image: "registry.cn-beijing.aliyuncs.com/36node/devops-backend-test:latest"
           env:
-            - name: DEPLOY_TIME
-              value: "{{ devops_backend_test_time }}"
             - name: PORT
               value: "80"
             - name: BASE
-              value: "{{ base_path }}"
+              value: /v0
             - name: MONGODB_CONNECTION
-              value: "{{ mongodb_connection }}"
+              value: mongodb://root:it_is_a_secret@mongodb
           ports:
             - name: http
               containerPort: 80
