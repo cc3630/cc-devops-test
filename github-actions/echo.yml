@@ -1,0 +1,26 @@
+# This workflow will run tests using node and then publish a package to NPM Packages when a release is created
+# For more information see: https://help.github.com/actions/language-and-framework-guides/publishing-nodejs-packages
+
+name: Pr Build
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+jobs:
+  build-test:
+    runs-on: ubuntu-18.04
+    env:
+      EVENT_TYPE: pr-deploy
+    steps:
+      - uses: actions/checkout@v2
+      - name: test 1
+        env:
+          TEST_A: ${{ toJSON(github.event) }}
+        run: |
+          echo "${{ env.TEST_A }}"
+      - name: test 2
+        env:
+          PR_OPEN: ${{ github.event.pull_request.type == 'opened' }}
+        run: |
+          echo "${{ env.PR_OPEN }}"

@@ -46,10 +46,10 @@ jobs:
         env:
           URL: https://api.github.com/repos/${{ github.event.client_payload.org }}/${{ github.event.client_payload.repo }}/issues/${{ github.event.client_payload.number }}/comments
           DEPLOY_DOMAIN: ${{ github.event.client_payload.namespace }}.${{ env.DOMAIN_BASE }}
-          DEPLOY_URL: ${{ github.event.client_payload.deploy_url_prefix }}.${{ env.DOMAIN_BASE }}${{ github.event.client_payload.deploy_url_suffix }}
+          DEPLOY_URL: ${{ github.event.client_payload.deploy_url_prefix }}.${{ env.DEPLOY_DOMAIN }}${{ github.event.client_payload.deploy_url_suffix }}
         uses: fjogeleit/http-request-action@master
         with:
           url: ${{ env.URL }}
           method: "POST"
           customHeaders: '{"Accept":"application/vnd.github.v3+json","Authorization":"token ${{ secrets.PR_TOKEN }}"}'
-          data: '{"body":"该pr部署在`${{ github.event.client_payload.namespace }}`命名空间上，domain为`${{ env.DEPLOY_DOMAIN }}`，url链接为${{ env.DEPLOY_URL }}\n工程内的其他项目domain与该pr的domain相同"}'
+          data: '{"body":"该pr部署在${{ github.event.client_payload.namespace }}命名空间上，domain为，url链接为${{ env.DEPLOY_URL }}\n工程内的其他项目domain与该pr的domain相同"}'

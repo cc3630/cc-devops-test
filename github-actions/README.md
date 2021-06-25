@@ -6,17 +6,25 @@
 
 ### pr-build.yml
 
-`当工程pr被创建、重新打开、同步时，重新build镜像，并推送到阿里云`
+`当工程pr被创建、重新打开、同步时，重新build镜像，并推送到阿里云，最后调用repository_dispatch事件调用devops项目进行部署`
 
-- [ ] 在该 action 中，跳过阿里云触发环节，直接使用 github event 触发
+### main-build.yml
 
-### dispatch.yml
+`主分支main push时，重新build镜像，并推送到阿里云，最后调用repository_dispatch事件调用devops项目进行部署`
 
-`通过repository_dispatch事件触发，ssh至跳板机，部署应用`
+### pr-dispatch.yml
+
+`通过repository_dispatch事件触发，ssh至跳板机，部署pr环境`
 
 使用 ssh 到跳板机上，执行相应的 devops 的 ansible 文件，存在如下问题
 
 - 目前跳板机的 git 没有设置登录，如果更新，需要手动拷贝 devops 工程到跳板机，未来考虑将 devops 打包为镜像，并运行在 k8s 上，可能存在如何连接至相应 pod 的问题
+
+### main-dispatch.yml
+
+`通过repository_dispatch事件触发，ssh至跳板机，部署uat环境`
+
+- 存在与 pr-dispatch.yml 相同的问题
 
 ### ansible.yml
 
