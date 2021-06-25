@@ -14,7 +14,7 @@
 
 ### pr-dispatch.yml
 
-`通过repository_dispatch事件触发，ssh至跳板机，部署pr环境`
+`通过repository_dispatch事件触发，ssh至跳板机，部署pr环境，如果状态为创建，像pr所在仓库发送评论，显示ns、domain和新的url`
 
 使用 ssh 到跳板机上，执行相应的 devops 的 ansible 文件，存在如下问题
 
@@ -39,3 +39,7 @@
 
 `用于直接通过kubectl执行镜像pod的yml文件`
 目前已弃用该方案
+
+### common-step.yml
+
+`用于存储常用step`

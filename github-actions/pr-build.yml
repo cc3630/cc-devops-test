@@ -22,7 +22,6 @@ jobs:
       DEVOPS_REPO_NAME: cc-devops-test
       ORG_NAME: cc3630
       REPO_NAME: devops-backend-test
-      NAMESPACE: ${{ env.NS_PREFIX }}-${{ env.REPO_NAME }}-pr-${{ github.event.pull_request.number}}
     steps:
       - uses: actions/checkout@v2
       - name: Login aliyun
@@ -41,12 +40,13 @@ jobs:
       - name: Create repository dispatch event
         env:
           URL: https://api.github.com/repos/${{ env.DEVOPS_ORG_NAME }}/${{ env.DEVOPS_REPO_NAME }}/dispatches
-          DEPLOY_URL_PREFIX: https://api.${{ env.NAMESPACE }}
+          NAMESPACE: ${{ env.NS_PREFIX }}-${{ env.REPO_NAME }}-pr-${{ github.event.pull_request.number}}
+          DEPLOY_URL_PREFIX: https://api.${{ env.NS_PREFIX }}-${{ env.REPO_NAME }}-pr-${{ github.event.pull_request.number}}
           DEPLOY_URL_SUFFIX: /${{ env.REPO_NAME }}/v0
-          PR_OPEN: ${{ github.event.pull_request.type == 'opened' }}
+          PR_OPEN: ${{ github.event.action == 'opened' }}
         uses: fjogeleit/http-request-action@master
         with:
           url: ${{ env.URL }}
           method: "POST"
           customHeaders: '{"Accept":"application/vnd.github.v3+json","Authorization":"token ${{ secrets.PR_TOKEN }}"}'
-          data: '{"event_type":"${{ env.EVENT_TYPE }}","client_payload":{"namespace":"${{ env.NAMESPACE }}","deploy_url_prefix":"${{ env.DEPLOY_URL_PREFIX }}","deploy_url_suffix":"${{ env.DEPLOY_URL_SUFFIX }}""image_org":"${{ env.IMAGE_ORG_NAME }}","image_repo":"${{ env.IMAGE_REPO_NAME }}","org":"${{ env.REPO_NAME }}","repo":"${{ env.REPO_NAME }}","number":"${{ github.event.pull_request.number }}","tag":"pr-${{ github.event.pull_request.number }}","open":${{ env.PR_OPEN }}}}'
+          data: '{"event_type":"${{ env.EVENT_TYPE }}","client_payload":{"namespace":"${{ env.NAMESPACE }}","deploy_url_prefix":"${{ env.DEPLOY_URL_PREFIX }}","deploy_url_suffix":"${{ env.DEPLOY_URL_SUFFIX }}","image_org":"${{ env.IMAGE_ORG_NAME }}","image_repo":"${{ env.IMAGE_REPO_NAME }}","org":"${{ env.ORG_NAME }}","repo":"${{ env.REPO_NAME }}","number":"${{ github.event.pull_request.number }}","tag":"pr-${{ github.event.pull_request.number }}","open":${{ env.PR_OPEN }}}}'
