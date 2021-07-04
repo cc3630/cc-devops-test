@@ -26,3 +26,18 @@ devops 测试工程，用于快速部署 k8s 的测试环境
 - pr 工程引用 ci-backend.yml、ci-frontend.yml 和 pr-build.yml 的 github action 文件
 - 以阿里云镜像仓库为例，pr 工程需要 ALI_REGISTRY、ALI_USERNAME、ALI_PASSWORD，此外 pr-build.yml 中的 org_name 和 repo_name 需要和阿里云镜像地址一致
 - pr 工程也需要 PR_TOKEN
+
+### adv-uat 卸载方法
+```
+k -n adv-uat delete deployments.apps finance
+k -n adv-uat delete deployments.apps hall
+k -n adv-uat delete deployments.apps kanban
+k -n adv-uat delete deployments.apps tower
+k -n adv-uat delete deployments.apps bank
+k -n adv-uat delete deployments.apps club
+helm uninstall mongodb -n adv-uat
+helm uninstall postgresql -n adv-uat
+k -n adv-uat get pvc
+k -n adv-uat delete pvc data-postgresql-postgresql-0
+kubectl delete ns adv-uat
+```

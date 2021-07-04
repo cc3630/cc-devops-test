@@ -11,6 +11,7 @@ jobs:
   build-test:
     runs-on: ubuntu-18.04
     env:
+      # !!! 注意根据url修改 DEPLOY_URL_PREFIX 和 DEPLOY_URL_SUFFIX
       # IMAGE_ORG_NAME、IMAGE_REPO_NAME 表示镜像仓库的组织名和仓库名
       # DEVOPS_ORG_NAME、DEVOPS_REPO_NAME 表示Github仓库上Devops工程的组织名和仓库名
       # ORG_NAME、REPO_NAME 表示Github仓库的组织名和仓库名
