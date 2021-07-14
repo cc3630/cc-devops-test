@@ -11,10 +11,28 @@ on:
 jobs:
   build-test:
     runs-on: ubuntu-18.04
+    env:
+      DEVOPS_PATH: z-ctyun-devops
+      SSH_SERVER: 218.78.25.41
+      SSH_PORT: 8022
+      SSH_USER: root
+      DEPLOY_NAME: adventurer-tech-uat
+      APP_ID: cli_a068cc62edf89013 # 飞书 app_id
+      APP_SECRET: W5dHLyEf0fhakoZvfSWRmg5B7nSdS06O # 飞书 app_secret
+      CHAT_ID: oc_207d563f8af99f75e8bc843e4a246b07 # 待发送的群聊id
     steps:
       - uses: actions/checkout@v2
-      - name: test 1
+      - name: Feishu get tenant_access_token
+        id: resp
         env:
-          TEST_A: ${{ toJSON(github) }}
+          TOKEN_URL: https://open.feishu.cn/open-apis/auth/v3/tenant_access_token/internal
+        uses: fjogeleit/http-request-action@master
+        with:
+          url: ${{ env.TOKEN_URL }}
+          method: "POST"
+          contentType: "application/json; charset=utf-8"
+          data: '{"app_id":"${{ env.APP_ID }}","app_secret":"${{ env.APP_SECRET }}"}'
+      - name: test 1
         run: |
-          echo "${{ env.TEST_A }}"
+          echo "${{ steps.resp.outputs.response }}"
+          echo "${{ fromJSON(steps.resp.outputs.response).tenant_access_token }}"
