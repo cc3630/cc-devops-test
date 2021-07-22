@@ -4,6 +4,18 @@ roles:
     name: 36node.alidns
     version: main
 
+  - src: https://github.com/36node-roles/common
+    name: 36node.common
+    version: main
+
+  - src: https://github.com/36node-roles/etchost
+    name: 36node.etchost
+    version: main
+
+  - src: https://github.com/36node-roles/k3s
+    name: 36node.k3s
+    version: main
+
   - src: https://github.com/36node-roles/mongodb
     name: 36node.mongodb
     version: main

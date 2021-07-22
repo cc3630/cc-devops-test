@@ -1,0 +1,59 @@
+# 集群管理员执行
+---
+- name: Setup k8s cluster
+  hosts: k8s
+  gather_facts: false
+  roles:
+    - 36node.common
+    - 36node.etchost
+
+    - role: 36node.k3s
+      vars:
+        k8s_cluster_name: test-ctyun
+        k8s_lb: 192.168.102.169
+        aliyuncs:
+          username: "{{ lookup('env','ALIYUNCS_USER') }}"
+          password: "{{ lookup('env','ALIYUNCS_PASSWORD') }}"
+          mirror: https://zh0vhvl1.mirror.aliyuncs.com
+
+  tasks:
+    - name: Pause for 10 minutes to wait k3s install
+      pause:
+        minutes: 5
+
+- name: Setup cluster infrastructure
+  hosts: localhost
+  gather_facts: false
+
+  vars:
+    mongodb_replicaset: rs0
+
+  roles:
+    - role: 36node.cert-manager
+      tags:
+        - cert
+      vars:
+        namespace: cert-manager
+        alidns_enabled: true
+
+    # - role: 36node.alidns
+    #   tags:
+    #     - dns
+    #   vars:
+    #     alidns_records:
+    #       - 36node.com z-ctyun 218.78.25.41 A
+    #       - 36node.com *.z-ctyun 218.78.25.41 A
+
+    - role: 36node.mongodb
+      tags:
+        - mongodb
+      vars:
+        mongodb_state: present
+        mongodb_namespace: data
+        mongodb_storage_class: "local-path"
+        mongodb_storage_size: 2Gi
+        mongodb_chart_values:
+          architecture: standalone
+          auth:
+            enabled: true
+            rootPassword: "{{ lookup('env','MONGODB_ROOT_PASSWORD') }}"

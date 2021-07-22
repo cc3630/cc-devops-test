@@ -23,3 +23,19 @@ ansible_become_pass="{{ lookup('env','ANSIBLE_BECOME_PASS') }}"
 ## aliyun cli && sdk
 ali_key="{{ lookup('env','ALI_KEY') }}"
 ali_secret="{{ lookup('env','ALI_SECRET') }}"
+
+[utils]
+; jumper    ansible_host=192.168.102.8   cores=4  memory=16G vda=100G  os=ubuntu20 specs=s6.xlarge.4
+; gate    ansible_host=192.168.102.2
+deploy  ansible_host=192.168.102.168 cores=4 memory=16G vda=100G os=ubuntu20 specs=s6.xlarge.4
+
+[k8s:children]
+masters
+workers
+
+[masters]
+worker-165 ansible_host=192.168.102.165 cores=4 memory=16G vda=100G os=ubuntu20 specs=s6.xlarge.4
+
+[workers]
+worker-166 ansible_host=192.168.102.166 cores=4 memory=16G vda=100G os=ubuntu20 specs=s6.xlarge.4
+worker-167 ansible_host=192.168.102.167 cores=4 memory=16G vda=100G os=ubuntu20 specs=s6.xlarge.4

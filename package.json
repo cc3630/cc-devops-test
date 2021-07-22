@@ -10,7 +10,8 @@
     "postinstall": "ansible-galaxy install -r requirements.yml",
     "format": "prettier --write 'src/**'",
     "release": "standard-version",
-    "site:cc3630": "dotenv ansible-playbook cc3630.yml"
+    "site:cc3630": "dotenv ansible-playbook cc3630.yml",
+    "site:install": "dotenv ansible-playbook install.yml"
   },
   "commitlint": {
     "extends": [
