@@ -4,6 +4,10 @@ roles:
     name: 36node.alidns
     version: main
 
+  - src: https://github.com/36node-roles/cert-manager
+    name: 36node.cert-manager
+    version: main
+
   - src: https://github.com/36node-roles/common
     name: 36node.common
     version: main

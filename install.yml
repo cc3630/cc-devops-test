@@ -11,6 +11,8 @@
       vars:
         k8s_cluster_name: test-ctyun
         k8s_lb: 192.168.102.169
+        k3s_version: v1.20.9+k3s1
+        force_install: true
         aliyuncs:
           username: "{{ lookup('env','ALIYUNCS_USER') }}"
           password: "{{ lookup('env','ALIYUNCS_PASSWORD') }}"
@@ -36,13 +38,13 @@
         namespace: cert-manager
         alidns_enabled: true
 
-    # - role: 36node.alidns
-    #   tags:
-    #     - dns
-    #   vars:
-    #     alidns_records:
-    #       - 36node.com z-ctyun 218.78.25.41 A
-    #       - 36node.com *.z-ctyun 218.78.25.41 A
+    - role: 36node.alidns
+      tags:
+        - dns
+      vars:
+        alidns_records:
+          - 36node.com z-ctyun 218.78.25.41 A
+          - 36node.com *.z-ctyun 218.78.25.41 A
 
     - role: 36node.mongodb
       tags:
