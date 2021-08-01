@@ -1,0 +1,24 @@
+- name: Setup cluster infra structure
+  hosts: localhost
+  gather_facts: false
+
+  vars:
+    namespace: monitoring
+    state: present
+    domain: "{{ namespace }}.36node.com"
+    # cert_issuer: letsencrypt-staging-alidns
+    cert_issuer: letsencrypt-alidns
+    ingress_name: monitoring
+
+  roles:
+    - role: 36node.alidns
+      tags:
+        - dns
+      vars:
+        alidns_records:
+          - "36node.com {{ namespace }} 218.78.25.41 A"
+          - "36node.com *.{{ namespace }} 218.78.25.41 A"
+
+    - role: prometheus
+      tags:
+        - prometheus

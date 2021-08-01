@@ -11,7 +11,8 @@
     "format": "prettier --write 'src/**'",
     "release": "standard-version",
     "site:cc3630": "dotenv ansible-playbook cc3630.yml",
-    "site:install": "dotenv ansible-playbook install.yml"
+    "site:install": "dotenv ansible-playbook install.yml",
+    "site:monitor": "dotenv ansible-playbook monitor.yml"
   },
   "commitlint": {
     "extends": [

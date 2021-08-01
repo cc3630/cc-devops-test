@@ -1,0 +1,18 @@
+---
+# tasks file for prometheus
+- name: Namespace for devops-test
+  community.kubernetes.k8s:
+    state: "{{ state }}"
+    name: "{{ namespace }}"
+    api_version: v1
+    kind: Namespace
+
+- name: ingress
+  community.kubernetes.k8s:
+    state: "{{ state }}"
+    namespace: "{{ namespace }}"
+    template: "{{ item }}"
+  with_items:
+    - ingress.yml.j2
+  tags:
+    - prometheus
