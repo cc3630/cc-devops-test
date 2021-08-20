@@ -41,3 +41,4 @@ k -n adv-uat get pvc
 k -n adv-uat delete pvc data-postgresql-postgresql-0
 kubectl delete ns adv-uat
 ```
+1232131
