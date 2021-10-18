@@ -1,56 +1,40 @@
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: devops-test
-spec:
-  type: ClusterIP
-  ports:
-    - name: http
-      port: 80
-      targetPort: 80
-      protocol: TCP
-  selector:
-    app: devops-test
----
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: devops-test
-spec:
-  replicas: 1
-  minReadySeconds: 5
-  strategy:
-    type: RollingUpdate
-    rollingUpdate:
-      maxSurge: 1
-      maxUnavailable: 1
-  selector:
-    matchLabels:
-      app: devops-test
-  template:
-    metadata:
-      labels:
-        name: devops-test
-        app: devops-test
-    spec:
-      containers:
-        - name: devops-test
-          image: "registry.cn-beijing.aliyuncs.com/36node/devops-backend-test:latest"
-          env:
-            - name: PORT
-              value: "80"
-            - name: BASE
-              value: /v0
-            - name: MONGODB_CONNECTION
-              value: mongodb://root:it_is_a_secret@mongodb
-          ports:
-            - name: http
-              containerPort: 80
-          resources:
-            limits:
-              cpu: "1000m"
-              memory: "1Gi"
-            requests:
-              cpu: "10m"
-              memory: "32Mi"
+- name: Setup cluster infra structure
+  hosts: localhost
+  gather_facts: false
+
+  vars:
+    namespace: devops-test
+    state: present
+    domain: "{{ namespace }}.36node.com"
+    cert_issuer: letsencrypt-alidns
+    mongodb_connection: "mongodb://root:{{ lookup('env','MONGODB_ROOT_PASSWORD') }}@mongodb"
+    devops_backend_test_version: latest
+    url_path: /v0
+    base_path: /v0
+
+  roles:
+    - role: 36node.alidns
+      tags:
+        - dns
+      vars:
+        alidns_records:
+          - "36node.com {{ namespace }} 218.78.25.41 A"
+          - "36node.com *.{{ namespace }} 218.78.25.41 A"
+
+    - role: 36node.mongodb
+      tags:
+        - mongodb
+      vars:
+        mongodb_state: "{{ state }}"
+        mongodb_namespace: "{{ namespace }}"
+        mongodb_storage_class: local-path
+        mongodb_storage_size: 1Gi
+        mongodb_chart_values:
+          architecture: standalone
+          auth:
+            enabled: true
+            rootPassword: "{{ lookup('env','MONGODB_ROOT_PASSWORD') }}"
+
+    - role: devops-test
+      tags:
+        - devops-test

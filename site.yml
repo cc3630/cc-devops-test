@@ -11,8 +11,7 @@
       vars:
         k8s_cluster_name: test-ctyun
         k8s_lb: 192.168.102.169
-        k3s_version: v1.20.9+k3s1
-        force_install: true
+        k3s_version: v1.21.5+k3s1
         aliyuncs:
           username: "{{ lookup('env','ALIYUNCS_USER') }}"
           password: "{{ lookup('env','ALIYUNCS_PASSWORD') }}"
@@ -21,14 +20,11 @@
   tasks:
     - name: Pause for 10 minutes to wait k3s install
       pause:
-        minutes: 5
+        minutes: 10
 
 - name: Setup cluster infrastructure
   hosts: localhost
   gather_facts: false
-
-  vars:
-    mongodb_replicaset: rs0
 
   roles:
     - role: 36node.cert-manager
@@ -37,14 +33,6 @@
       vars:
         namespace: cert-manager
         alidns_enabled: true
-
-    - role: 36node.alidns
-      tags:
-        - dns
-      vars:
-        alidns_records:
-          - 36node.com z-ctyun 218.78.25.41 A
-          - 36node.com *.z-ctyun 218.78.25.41 A
 
     - role: 36node.mongodb
       tags:
